@@ -1,0 +1,111 @@
+---
+- name: Create /var/docker/caddy directory
+  ansible.builtin.file:
+    dest: /var/docker/caddy
+    state: directory
+    mode: 0755
+
+- name: Copy docker-compose.yml file
+  ansible.builtin.template:
+    src: docker-compose.j2
+    dest: /var/docker/caddy/docker-compose.yml
+    mode: 0640
+
+- name: Copy Dockerfile file
+  ansible.builtin.template:
+    src: Dockerfile.j2
+    dest: /var/docker/caddy/Dockerfile
+    mode: 0640
+
+- name: Copy Caddyfile file
+  ansible.builtin.template:
+    src: Caddyfile.j2
+    dest: /var/docker/caddy/Caddyfile
+    mode: 0640
+
+- name: Create /var/docker/caddy/certificates folder
+  ansible.builtin.file:
+    dest: /var/docker/caddy/certificates
+    state: directory
+    owner: root
+    group: root
+    mode: 0640
+
+- name: Copy private keys for reverse proxy sites
+  ansible.builtin.copy:
+    content: "{{ site['tls_certificate']['private_key'] }}"
+    dest: /var/docker/caddy/{{ site['domain_name'] }}-key.pem
+    owner: root
+    group: root
+    mode: 0640
+  when: site['tls_certificate'] is defined
+  loop: "{{ caddy_sites_reverse_proxy | default([]) }}"
+  loop_control:
+    loop_var: site
+
+- name: Copy certificates for reverse proxy sites
+  ansible.builtin.copy:
+    content: "{{ site['tls_certificate']['certificate'] }}"
+    dest: /var/docker/caddy/{{ site['domain_name'] }}-cert.pem
+    owner: root
+    group: root
+    mode: 0640
+  when: site['tls_certificate'] is defined
+  loop: "{{ caddy_sites_reverse_proxy | default([]) }}"
+  loop_control:
+    loop_var: site
+
+- name: Copy private keys for redirect sites
+  ansible.builtin.copy:
+    content: "{{ site['tls_certificate']['private_key'] }}"
+    dest: /var/docker/caddy/{{ site['domain_name'] }}-key.pem
+    owner: root
+    group: root
+    mode: 0640
+  when: site['tls_certificate'] is defined
+  loop: "{{ caddy_sites_redirect | default([]) }}"
+  loop_control:
+    loop_var: site
+
+- name: Copy certificates for redirect sites
+  ansible.builtin.copy:
+    content: "{{ site['tls_certificate']['certificate'] }}"
+    dest: /var/docker/caddy/{{ site['domain_name'] }}-cert.pem
+    owner: root
+    group: root
+    mode: 0640
+  when: site['tls_certificate'] is defined
+  loop: "{{ caddy_sites_redirect | default([]) }}"
+  loop_control:
+    loop_var: site
+
+- name: Copy private keys for custom sites
+  ansible.builtin.copy:
+    content: "{{ site['tls_certificate']['private_key'] }}"
+    dest: /var/docker/caddy/{{ site['domain_name'] }}-key.pem
+    owner: root
+    group: root
+    mode: 0640
+  when: site['tls_certificate'] is defined
+  loop: "{{ caddy_sites_custom | default([]) }}"
+  loop_control:
+    loop_var: site
+
+- name: Copy certificates for custom sites
+  ansible.builtin.copy:
+    content: "{{ site['tls_certificate']['certificate'] }}"
+    dest: /var/docker/caddy/{{ site['domain_name'] }}-cert.pem
+    owner: root
+    group: root
+    mode: 0640
+  when: site['tls_certificate'] is defined
+  loop: "{{ caddy_sites_custom | default([]) }}"
+  loop_control:
+    loop_var: site
+
+- name: Start the Caddy containers
+  community.docker.docker_compose_v2:
+    project_src: /var/docker/caddy
+    state: present
+    pull: always
+    recreate: always

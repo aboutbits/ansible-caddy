@@ -1,0 +1,23 @@
+services:
+  caddy:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      - ./certificates:/etc/caddy/certificates
+      - caddy-data:/data
+      - caddy-config:/config
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+volumes:
+  caddy-data:
+    driver: local
+  caddy-config:
+    driver: local

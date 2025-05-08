@@ -1,0 +1,6 @@
+---
+caddy_version: 2.10
+caddy_packages: []
+caddy_sites_reverse_proxy: []
+caddy_sites_redirect: []
+caddy_sites_custom: []

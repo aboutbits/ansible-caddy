@@ -1,0 +1,81 @@
+# Reverse Proxies
+{% for site in caddy_sites_reverse_proxy | default([]) %}
+{{ site['domain_name'] }} {
+  reverse_proxy {
+    to {{ site['destination_url'] }}
+
+{% if site['transport_http'] is defined %}
+    transport http {
+{% if (site['transport_http']['tls_insecure_skip_verify'] is defined and site['transport_http']['tls_insecure_skip_verify'] == true) %}
+      tls_insecure_skip_verify
+{% endif %}
+    }
+{% endif %}
+
+{% if site['headers_up'] is defined %}
+{% for header_up in site['headers_up'] %}
+    header_up {% if header_up['operation'] is defined %}{{ header_up['operation'] }}{% endif %}{{ header_up['field'] }}{% if header_up['value'] is defined %} {{ header_up['value'] }}{% endif %}
+
+{% endfor %}
+{% endif %}
+{% if site['headers_down'] is defined %}
+{% for header_down in site['headers_down'] %}
+    header_down {% if header_down['operation'] is defined %}{{ header_down['operation'] }}{% endif %}{{ header_down['field'] }}{% if header_down['value'] is defined %} {{ header_down['value'] }}{% endif %}
+
+{% endfor %}
+{% endif %}
+  }
+
+{% if (site['compression'] is defined and site['compression'] == true) %}
+  encode zstd gzip
+{% endif %}
+
+{% if site['tls_dns'] is defined %}
+  tls {
+    dns {{ site['tls_dns']['provider'] }}{% if site['tls_dns']['config'] is defined %} {{ site['tls_dns']['config'] }}{% endif %}
+  }
+{% endif %}
+{% if site['tls_certificate'] is defined %}
+  tls /etc/caddy/certificates/{{ site['domain_name'] }}-cert.pem /etc/caddy/certificates/{{ site['domain_name'] }}-key.pem
+{% endif %}
+}
+
+{% endfor %}
+
+# Redirects
+{% for site in caddy_sites_redirect | default([]) %}
+{{ site['domain_name'] }} {
+  redir {{ site['destination_url'] }}{uri}{% if site['permanent'] is defined and site['permanent'] %} permanent{% endif %}
+
+{% if site['tls_dns'] is defined %}
+  tls {
+    dns {{ site['tls_dns']['provider'] }}{% if site['tls_dns']['config'] is defined %} {{ site['tls_dns']['config'] }}{% endif %}
+  }
+{% endif %}
+{% if site['tls_certificate'] is defined %}
+  tls /etc/caddy/certificates/{{ site['domain_name'] }}-cert.pem /etc/caddy/certificates/{{ site['domain_name'] }}-key.pem
+{% endif %}
+}
+
+{% endfor %}
+
+# Customs
+{% for site in caddy_sites_custom | default([]) %}
+{{ site['domain_name'] }} {
+{{ lookup('ansible.builtin.template', site['config_file']) }}
+
+{% if (site['compression'] is defined and site['compression'] == true) %}
+  encode zstd gzip
+{% endif %}
+
+{% if site['tls_dns'] is defined %}
+  tls {
+    dns {{ site['tls_dns']['provider'] }}{% if site['tls_dns']['config'] is defined %} {{ site['tls_dns']['config'] }}{% endif %}
+  }
+{% endif %}
+{% if site['tls_certificate'] is defined %}
+  tls /etc/caddy/certificates/{{ site['domain_name'] }}-cert.pem /etc/caddy/certificates/{{ site['domain_name'] }}-key.pem
+{% endif %}
+}
+
+{% endfor %}

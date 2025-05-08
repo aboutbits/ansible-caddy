@@ -1,0 +1,7 @@
+---
+galaxy_info:
+  author: Alex Lanz
+  description: Install Caddy role.
+  company: AboutBits
+  license: MIT
+  min_ansible_version: 2.10
