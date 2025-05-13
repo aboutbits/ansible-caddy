@@ -11,13 +11,13 @@ services:
     volumes:
       - ./Caddyfile:/etc/caddy/Caddyfile
       - ./certificates:/etc/caddy/certificates
-      - caddy-data:/data
-      - caddy-config:/config
+      - caddy_data:/data
+      - caddy_config:/config
     extra_hosts:
       - "host.docker.internal:host-gateway"
 
 volumes:
-  caddy-data:
+  caddy_data:
     driver: local
-  caddy-config:
+  caddy_config:
     driver: local

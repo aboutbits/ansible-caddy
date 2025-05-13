@@ -108,4 +108,5 @@
     project_src: /var/docker/caddy
     state: present
     pull: always
+    build: always
     recreate: always
