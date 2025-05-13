@@ -19,7 +19,7 @@ Install Caddy role.
     - ansible.builtin.include_role:
         name: ansible-caddy-installation
       vars:
-        caddy_version: 2.10
+        caddy_version: 2.9
         caddy_packages:
           - github.com/caddy-dns/digitalocean
         caddy_sites_reverse_proxy:

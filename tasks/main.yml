@@ -22,6 +22,7 @@
     src: Caddyfile.j2
     dest: /var/docker/caddy/Caddyfile
     mode: 0640
+    trim_block: false
 
 - name: Create /var/docker/caddy/certificates folder
   ansible.builtin.file:
