@@ -5,6 +5,4 @@ FROM caddy:{{ caddy_version }}-builder AS builder
 
 FROM caddy:{{ caddy_version }}
 
-{% if caddy_packages|length > 0 %}
-COPY --from=builder /usr/bin/caddy /usr/bin/caddy
-{% endif %}
+{% if caddy_packages|length > 0 %}COPY --from=builder /usr/bin/caddy /usr/bin/caddy{% endif %}
