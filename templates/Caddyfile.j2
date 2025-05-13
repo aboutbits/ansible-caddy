@@ -7,22 +7,18 @@
 
 {% if site['transport_http'] is defined %}
     transport http {
-{% if (site['transport_http']['tls_insecure_skip_verify'] is defined and site['transport_http']['tls_insecure_skip_verify'] == true) %}
-      tls_insecure_skip_verify
-{% endif %}
+        {% if (site['transport_http']['tls_insecure_skip_verify'] is defined and site['transport_http']['tls_insecure_skip_verify'] == true) %}tls_insecure_skip_verify{% endif %}
     }
 {% endif %}
 
 {% if site['headers_up'] is defined %}
 {% for header_up in site['headers_up'] %}
     header_up {% if header_up['operation'] is defined %}{{ header_up['operation'] }}{% endif %}{{ header_up['field'] }}{% if header_up['value'] is defined %} {{ header_up['value'] }}{% endif %}
-
 {% endfor %}
 {% endif %}
 {% if site['headers_down'] is defined %}
 {% for header_down in site['headers_down'] %}
     header_down {% if header_down['operation'] is defined %}{{ header_down['operation'] }}{% endif %}{{ header_down['field'] }}{% if header_down['value'] is defined %} {{ header_down['value'] }}{% endif %}
-
 {% endfor %}
 {% endif %}
   }

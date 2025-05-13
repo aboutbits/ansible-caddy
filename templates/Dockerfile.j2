@@ -1,7 +1,7 @@
+#jinja2: trim_blocks:False
 FROM caddy:{{ caddy_version }}-builder AS builder
 
 {% if caddy_packages|length > 0 %}RUN xcaddy build{% for caddy_package in caddy_packages %} --with {{ caddy_package }}{% endfor %}{% endif %}
-
 
 FROM caddy:{{ caddy_version }}
 
