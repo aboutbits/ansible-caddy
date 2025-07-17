@@ -34,7 +34,7 @@
 - name: Copy private keys for reverse proxy sites
   ansible.builtin.copy:
     content: "{{ site['tls_certificate']['private_key'] }}"
-    dest: /var/docker/caddy/{{ site['domain_name'] }}-key.pem
+    dest: /var/docker/caddy/certificates/{{ site['domain_name'] }}-key.pem
     owner: root
     group: root
     mode: 0640
@@ -46,7 +46,7 @@
 - name: Copy certificates for reverse proxy sites
   ansible.builtin.copy:
     content: "{{ site['tls_certificate']['certificate'] }}"
-    dest: /var/docker/caddy/{{ site['domain_name'] }}-cert.pem
+    dest: /var/docker/caddy/certificates/{{ site['domain_name'] }}-cert.pem
     owner: root
     group: root
     mode: 0640
@@ -58,7 +58,7 @@
 - name: Copy private keys for redirect sites
   ansible.builtin.copy:
     content: "{{ site['tls_certificate']['private_key'] }}"
-    dest: /var/docker/caddy/{{ site['domain_name'] }}-key.pem
+    dest: /var/docker/caddy/certificates/{{ site['domain_name'] }}-key.pem
     owner: root
     group: root
     mode: 0640
@@ -70,7 +70,7 @@
 - name: Copy certificates for redirect sites
   ansible.builtin.copy:
     content: "{{ site['tls_certificate']['certificate'] }}"
-    dest: /var/docker/caddy/{{ site['domain_name'] }}-cert.pem
+    dest: /var/docker/caddy/certificates/{{ site['domain_name'] }}-cert.pem
     owner: root
     group: root
     mode: 0640
@@ -82,7 +82,7 @@
 - name: Copy private keys for custom sites
   ansible.builtin.copy:
     content: "{{ site['tls_certificate']['private_key'] }}"
-    dest: /var/docker/caddy/{{ site['domain_name'] }}-key.pem
+    dest: /var/docker/caddy/certificates/{{ site['domain_name'] }}-key.pem
     owner: root
     group: root
     mode: 0640
@@ -94,7 +94,7 @@
 - name: Copy certificates for custom sites
   ansible.builtin.copy:
     content: "{{ site['tls_certificate']['certificate'] }}"
-    dest: /var/docker/caddy/{{ site['domain_name'] }}-cert.pem
+    dest: /var/docker/caddy/certificates/{{ site['domain_name'] }}-cert.pem
     owner: root
     group: root
     mode: 0640
